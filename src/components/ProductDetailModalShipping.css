@@ -1,0 +1,18 @@
+.detail-shipping {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+}
+
+.shipping-label {
+    font-weight: bold;
+    color: #333;
+}
+
+.shipping-value {
+    color: #666;
+}
