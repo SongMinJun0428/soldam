@@ -39,6 +39,7 @@ const Navbar = () => {
           <a href="#" className="nav-link" onClick={(e) => handleNavClick(e, '김치/반찬')}>김치/반찬</a>
           <a href="#" className="nav-link" onClick={(e) => handleNavClick(e, '전통간식')}>전통간식</a>
           <a href="#" className="nav-link" onClick={(e) => handleNavClick(e, '차/음료')}>차/음료</a>
+          <a href="#" className="nav-link" onClick={(e) => handleNavClick(e, '밀키트')}>밀키트</a>
           <a href="#" className="nav-link" onClick={(e) => handleNavClick(e, '선물세트')}>선물세트</a>
         </div>
         <div className="nav-actions">

@@ -44,6 +44,7 @@ const Footer = () => {
               <a href="#">김치/반찬</a>
               <a href="#">전통간식</a>
               <a href="#">차/음료</a>
+              <a href="#">밀키트</a>
               <a href="#">선물세트</a>
             </div>
             <div className="link-group">

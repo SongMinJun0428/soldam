@@ -8,8 +8,14 @@ import './ProductGrid.css';
 const ProductGrid = () => {
   const { searchQuery, selectedCategory, setSelectedCategory, sortBy, setSortBy } = useShop();
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(12);
 
-  const categories = ['전체', '김치/반찬', '전통간식', '차/음료', '선물세트'];
+  // Reset visible count when filters change
+  useMemo(() => {
+    setVisibleCount(12);
+  }, [selectedCategory, searchQuery]);
+
+  const categories = ['전체', '김치/반찬', '전통간식', '차/음료', '밀키트', '선물세트'];
 
   const filteredProducts = useMemo(() => {
     let result = products;
@@ -31,6 +37,12 @@ const ProductGrid = () => {
 
     return result;
   }, [selectedCategory, sortBy, searchQuery]);
+
+  const visibleProducts = filteredProducts.slice(0, visibleCount);
+
+  const handleLoadMore = () => {
+    setVisibleCount(prev => prev + 12);
+  };
 
   return (
     <section className="product-section">
@@ -61,12 +73,20 @@ const ProductGrid = () => {
         </div>
 
         <div className="product-grid">
-          {filteredProducts.map((product) => (
+          {visibleProducts.map((product) => (
             <div key={product.id} onClick={() => setSelectedProduct(product)}>
               <ProductCard {...product} />
             </div>
           ))}
         </div>
+
+        {visibleCount < filteredProducts.length && (
+          <div className="load-more-container">
+            <button className="btn-secondary load-more-btn" onClick={handleLoadMore}>
+              더 보기
+            </button>
+          </div>
+        )}
       </div>
 
       <ProductDetailModal
@@ -90,6 +110,23 @@ const ProductGrid = () => {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
           gap: var(--spacing-lg);
+        }
+        .load-more-container {
+          text-align: center;
+          margin-top: var(--spacing-xl);
+        }
+        .load-more-btn {
+          padding: var(--spacing-sm) var(--spacing-xl);
+          font-size: var(--font-size-lg);
+          border: 2px solid var(--color-primary);
+          background: transparent;
+          color: var(--color-primary);
+          border-radius: 9999px;
+          transition: all 0.3s ease;
+        }
+        .load-more-btn:hover {
+          background: var(--color-primary);
+          color: white;
         }
       `}</style>
     </section>
