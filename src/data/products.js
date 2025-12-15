@@ -1,5 +1,8 @@
 import kimchiImage from '../assets/product_kimchi_whole.png';
 import pogiKimchiImage from '../assets/prod_101_pogi_kimchi.png';
+import gatKimchiImage from '../assets/prod_102_gat_kimchi.png';
+import namulSetImage from '../assets/prod_103_namul_set.png';
+import myeongranImage from '../assets/prod_104_myeongran.png';
 import banchanImage from '../assets/product_banchan_set.png';
 import hangwaImage from '../assets/product_hangwa_sweets.png';
 import dorajiExtract from '../assets/product_doraji_extract.png';
@@ -21,7 +24,7 @@ export const products = [
         title: '여수 돌산 갓김치 2kg',
         price: 28000,
         category: '김치/반찬',
-        image: kimchiImage,
+        image: gatKimchiImage,
         description: '여수 돌산의 톡 쏘는 맛이 일품인 별미 갓김치입니다.'
     },
     {
@@ -29,7 +32,7 @@ export const products = [
         title: '프리미엄 나물 반찬 5종 세트',
         price: 32000,
         category: '김치/반찬',
-        image: banchanImage,
+        image: namulSetImage,
         description: '시금치, 고사리, 도라지 등 제철 나물로 구성된 건강 반찬 세트입니다.'
     },
     {
@@ -37,7 +40,7 @@ export const products = [
         title: '저염 명란젓 500g',
         price: 25000,
         category: '김치/반찬',
-        image: banchanImage,
+        image: myeongranImage,
         description: '짜지 않고 담백한 최상급 저염 명란젓입니다.'
     },
     {
