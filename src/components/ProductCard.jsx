@@ -1,12 +1,15 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 
 const ProductCard = (product) => {
   const { addToCart } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const { image, title, price, category, discount, rating, reviews, freeShipping } = product;
 
   // Calculate discounted price
   const finalPrice = discount ? price * (1 - discount / 100) : price;
+  const isWishlisted = isInWishlist(product.id);
 
   return (
     <div className="product-card">
@@ -15,6 +18,15 @@ const ProductCard = (product) => {
         {discount > 0 && (
           <div className="discount-badge">{discount}% OFF</div>
         )}
+        <button
+          className={`wishlist-btn ${isWishlisted ? 'active' : ''}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleWishlist(product);
+          }}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill={isWishlisted ? "#e74c3c" : "none"} stroke={isWishlisted ? "#e74c3c" : "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        </button>
         <div className="product-overlay">
           <button className="btn-primary" onClick={(e) => {
             e.stopPropagation();
@@ -82,6 +94,25 @@ const ProductCard = (product) => {
           font-weight: bold;
           font-size: 0.8rem;
           z-index: 10;
+        }
+        .wishlist-btn {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          background: rgba(255,255,255,0.8);
+          border: none;
+          border-radius: 50%;
+          width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          z-index: 10;
+          transition: transform 0.2s;
+        }
+        .wishlist-btn:hover {
+          transform: scale(1.1);
         }
         .product-overlay {
           position: absolute;

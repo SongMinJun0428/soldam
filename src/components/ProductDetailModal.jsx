@@ -1,80 +1,118 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import './ProductDetailModal.css';
-import './ProductDetailModalShipping.css';
+import { useReview } from '../context/ReviewContext';
+import { useAuth } from '../context/AuthContext';
 
 const ProductDetailModal = ({ product, isOpen, onClose }) => {
     const { addToCart } = useCart();
+    const { reviews, addReview, getReviewsByProductId } = useReview();
+    const { user } = useAuth();
+    const [reviewText, setReviewText] = useState('');
+    const [rating, setRating] = useState(5);
 
     if (!isOpen || !product) return null;
 
+    const productReviews = getReviewsByProductId(product.id);
+
+    const handleAddReview = (e) => {
+        e.preventDefault();
+        if (!user) {
+            alert('로그인이 필요합니다.');
+            return;
+        }
+        addReview({
+            productId: product.id,
+            userId: user.name,
+            rating,
+            text: reviewText
+        });
+        setReviewText('');
+        alert('리뷰가 등록되었습니다.');
+    };
+
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-content product-detail-modal" onClick={e => e.stopPropagation()}>
                 <button className="close-btn" onClick={onClose}>&times;</button>
 
-                <div className="product-detail-grid">
-                    <div className="product-detail-image">
+                <div className="modal-body">
+                    <div className="detail-image-section">
                         <img src={product.image} alt={product.title} />
                     </div>
-
-                    <div className="product-detail-info">
+                    <div className="detail-info-section">
                         <span className="detail-category">{product.category}</span>
                         <h2 className="detail-title">{product.title}</h2>
-                        <p className="detail-price">₩{product.price.toLocaleString()}</p>
+                        <p className="detail-price">{product.price.toLocaleString()}원</p>
+                        <p className="detail-desc">{product.description}</p>
 
-                        <div className="detail-shipping">
-                            <span className="shipping-label">배송비</span>
-                            <span className="shipping-value">3,000원 (50,000원 이상 무료배송)</span>
-                        </div>
-
-                        <div className="detail-description">
-                            <h3>상품 설명</h3>
-                            <p>{product.description}</p>
-                            <p className="detail-note">
-                                * 본 제품은 100% 국내산 도라지만을 사용하여 정성껏 만들었습니다.
-                                <br />
-                                * 선물용으로도 아주 좋습니다.
-                            </p>
-                        </div>
-
-                        <div className="product-reviews">
-                            <h3>구매 후기 (3)</h3>
-                            <div className="review-item">
-                                <div className="review-header">
-                                    <span className="review-author">김*수</span>
-                                    <span className="review-rating">★★★★★</span>
-                                </div>
-                                <p className="review-text">부모님 선물로 드렸는데 너무 좋아하시네요. 포장도 고급스럽습니다.</p>
-                            </div>
-                            <div className="review-item">
-                                <div className="review-header">
-                                    <span className="review-author">이*영</span>
-                                    <span className="review-rating">★★★★★</span>
-                                </div>
-                                <p className="review-text">맛이 진하고 좋습니다. 재구매 의사 있습니다.</p>
-                            </div>
-                            <div className="review-item">
-                                <div className="review-header">
-                                    <span className="review-author">박*민</span>
-                                    <span className="review-rating">★★★★☆</span>
-                                </div>
-                                <p className="review-text">배송도 빠르고 상품 상태도 아주 훌륭합니다.</p>
-                            </div>
-                        </div>
-
-                        <button
-                            className="btn-primary detail-add-btn"
-                            onClick={() => {
+                        <div className="detail-actions">
+                            <button className="btn-primary btn-large" onClick={() => {
                                 addToCart(product);
                                 onClose();
-                            }}
-                        >
-                            장바구니 담기
-                        </button>
+                            }}>장바구니 담기</button>
+                        </div>
+
+                        <div className="reviews-section">
+                            <h3>리뷰 ({productReviews.length})</h3>
+                            <div className="review-list">
+                                {productReviews.length === 0 ? (
+                                    <p className="no-reviews">첫 번째 리뷰를 남겨주세요!</p>
+                                ) : (
+                                    productReviews.map(review => (
+                                        <div key={review.id} className="review-item">
+                                            <div className="review-header">
+                                                <span className="review-user">{review.userId}</span>
+                                                <span className="review-rating">{'★'.repeat(review.rating)}</span>
+                                            </div>
+                                            <p className="review-text">{review.text}</p>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+
+                            <form onSubmit={handleAddReview} className="review-form">
+                                <h4>리뷰 작성</h4>
+                                <div className="rating-input">
+                                    {[1, 2, 3, 4, 5].map(star => (
+                                        <span
+                                            key={star}
+                                            onClick={() => setRating(star)}
+                                            style={{ color: star <= rating ? '#f1c40f' : '#ddd', cursor: 'pointer' }}
+                                        >★</span>
+                                    ))}
+                                </div>
+                                <textarea
+                                    value={reviewText}
+                                    onChange={(e) => setReviewText(e.target.value)}
+                                    placeholder="리뷰를 작성해주세요"
+                                    required
+                                />
+                                <button type="submit" className="btn-secondary">등록</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
+            <style>{`
+        .product-detail-modal { max-width: 900px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        .modal-body { display: flex; gap: 30px; flex-wrap: wrap; }
+        .detail-image-section { flex: 1; min-width: 300px; }
+        .detail-image-section img { width: 100%; border-radius: 8px; }
+        .detail-info-section { flex: 1; min-width: 300px; }
+        .detail-category { color: #888; font-size: 0.9rem; }
+        .detail-title { font-size: 2rem; margin: 10px 0; }
+        .detail-price { font-size: 1.5rem; font-weight: bold; color: var(--color-primary); margin-bottom: 20px; }
+        .detail-desc { line-height: 1.6; color: #555; margin-bottom: 30px; }
+        .btn-large { width: 100%; padding: 15px; font-size: 1.1rem; }
+        
+        .reviews-section { margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; }
+        .review-list { max-height: 200px; overflow-y: auto; margin-bottom: 20px; }
+        .review-item { background: #f9f9f9; padding: 10px; border-radius: 4px; margin-bottom: 10px; }
+        .review-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9rem; }
+        .review-rating { color: #f1c40f; }
+        .review-form textarea { width: 100%; height: 60px; margin: 10px 0; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .rating-input { font-size: 1.5rem; margin-bottom: 5px; }
+      `}</style>
         </div>
     );
 };

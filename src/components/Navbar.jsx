@@ -2,6 +2,26 @@ import React, { useState, useEffect } from 'react';
 import logo from '../assets/logo.png';
 import './Navbar.css';
 import './NavbarSearch.css';
+
+/* Add this to Navbar.css or inline style */
+const dropdownStyles = `
+  .user-menu { position: relative; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .user-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    padding: 10px;
+    min-width: 120px;
+    z-index: 100;
+  }
+  .user-menu:hover .user-dropdown { display: flex; flex-direction: column; gap: 8px; }
+  .user-dropdown a { font-size: 0.9rem; color: #333; text-decoration: none; }
+  .user-dropdown a:hover { color: var(--color-primary); }
+`;
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useShop } from '../context/ShopContext';
@@ -57,7 +77,12 @@ const Navbar = () => {
           {isAuthenticated ? (
             <div className="user-menu">
               <span className="user-name">{user.name}님</span>
-              <button className="text-btn" onClick={logout}>로그아웃</button>
+              <div className="user-dropdown">
+                <a href="/mypage">마이페이지</a>
+                <a href="/wishlist">찜한 상품</a>
+                <a href="/admin">관리자</a>
+                <button className="text-btn" onClick={logout}>로그아웃</button>
+              </div>
             </div>
           ) : (
             <button className="text-btn" onClick={() => setIsAuthOpen(true)}>로그인</button>
@@ -69,6 +94,7 @@ const Navbar = () => {
         </div>
       </div>
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      <style>{dropdownStyles}</style>
     </nav>
   );
 };

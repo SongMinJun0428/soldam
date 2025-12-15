@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import CheckoutModal from './CheckoutModal';
+import { useNavigate } from 'react-router-dom';
 import AuthModal from './AuthModal';
 import './CartDrawer.css';
 
 const CartDrawer = () => {
     const { cart, isCartOpen, toggleCart, removeFromCart, updateQuantity, cartTotal } = useCart();
     const { isAuthenticated } = useAuth();
-    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const [isAuthOpen, setIsAuthOpen] = useState(false);
+    const navigate = useNavigate();
 
     const handleCheckout = () => {
         if (!isAuthenticated) {
@@ -17,8 +17,8 @@ const CartDrawer = () => {
             setIsAuthOpen(true);
             return;
         }
-        setIsCheckoutOpen(true);
         toggleCart(); // Close drawer
+        navigate('/checkout');
     };
 
     if (!isCartOpen) return null;
@@ -71,7 +71,6 @@ const CartDrawer = () => {
                     </div>
                 )}
             </div>
-            <CheckoutModal isOpen={isCheckoutOpen} onClose={() => setIsCheckoutOpen(false)} />
             <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
         </>
     );
